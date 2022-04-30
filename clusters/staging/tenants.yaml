@@ -12,3 +12,4 @@ spec:
     name: flux-system
   path: ./tenants/staging
   prune: true
+  serviceAccountName: go-flux
