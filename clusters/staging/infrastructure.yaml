@@ -29,3 +29,12 @@ spec:
   serviceAccountName: kustomize-controller
   path: ./infrastructure/kyverno-policies
   prune: true
+---
+apiVersion: source.toolkit.fluxcd.io/v1beta1
+kind: HelmRepository
+metadata:
+  name: ingress-nginx
+  namespace: ingress-nginx
+spec:
+  interval: 5m
+  url: https://kubernetes.github.io/ingress-nginx
