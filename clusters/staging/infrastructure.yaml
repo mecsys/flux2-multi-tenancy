@@ -1,58 +1,47 @@
-# apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
-# kind: Kustomization
-# metadata:
-#   name: kyverno
-#   namespace: flux-system
-# spec:
-#   interval: 720m0s
-#   sourceRef:
-#     kind: GitRepository
-#     name: flux-system
-#   serviceAccountName: kustomize-controller
-#   path: ./infrastructure/kyverno
-#   prune: true
-#   wait: true
-#   timeout: 10m
-# ---
-# apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
-# kind: Kustomization
-# metadata:
-#   name: kyverno-policies
-#   namespace: flux-system
-# spec:
-#   dependsOn:
-#     - name: kyverno
-#   interval: 15m0s
-#   sourceRef:
-#     kind: GitRepository
-#     name: flux-system
-#   serviceAccountName: kustomize-controller
-#   path: ./infrastructure/kyverno-policies
-#   prune: true
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: kyverno
+  namespace: flux-system
+spec:
+  interval: 720m0s
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  serviceAccountName: kustomize-controller
+  path: ./infrastructure/kyverno
+  prune: true
+  wait: true
+  timeout: 10m
 ---
-apiVersion: source.toolkit.fluxcd.io/v1beta2
-kind: HelmRepository
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
+metadata:
+  name: kyverno-policies
+  namespace: flux-system
+spec:
+  dependsOn:
+    - name: kyverno
+  interval: 15m0s
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  serviceAccountName: kustomize-controller
+  path: ./infrastructure/kyverno-policies
+  prune: true
+---
+apiVersion: kustomize.toolkit.fluxcd.io/v1beta2
+kind: Kustomization
 metadata:
   name: ingress-nginx
-  namespace: ingress-nginx
+  namespace: flux-system
 spec:
-  interval: 5m
-  url: https://kubernetes.github.io/ingress-nginx
----
-apiVersion: helm.toolkit.fluxcd.io/v2beta1
-kind: HelmRelease
-metadata:
-  name: ingress-nginx
-  namespace: ingress-nginx
-spec:
-  interval: 5m
-  #serviceAccountName: dev-team
-  releaseName: ingress-nginx
-  chart:
-    spec:
-      chart: ingress-nginx
-      version: 4.1.0
-      sourceRef:
-        kind: HelmRepository
-        name: ingress-nginx
-        namespace: ingress-nginx
+  dependsOn:
+    - name: kyverno
+  interval: 15m0s
+  sourceRef:
+    kind: GitRepository
+    name: flux-system
+  serviceAccountName: kustomize-controller
+  path: ./infrastructure/ingress-nginx
+  prune: true
