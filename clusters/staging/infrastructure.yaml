@@ -30,7 +30,7 @@ spec:
   path: ./infrastructure/kyverno-policies
   prune: true
 ---
-apiVersion: source.toolkit.fluxcd.io/v1beta1
+apiVersion: source.toolkit.fluxcd.io/v1beta2
 kind: HelmRepository
 metadata:
   name: ingress-nginx
@@ -45,6 +45,7 @@ metadata:
   name: ingress-nginx
   namespace: ingress-nginx
 spec:
+  interval: 5m
   #serviceAccountName: dev-team
   releaseName: ingress-nginx
   chart:
@@ -54,4 +55,3 @@ spec:
         kind: HelmRepository
         name: ingress-nginx
         namespace: ingress-nginx
-  interval: 5m
